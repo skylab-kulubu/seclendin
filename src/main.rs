@@ -4,9 +4,9 @@ mod util;
 use util::download_file;
 mod wallpaper;
 use wallpaper::Wallpaper;
+mod keyboard;
 #[cfg(target_os = "windows")]
-use windows::{core::*, Win32::UI::Input::KeyboardAndMouse::*};
-
+use keyboard::change_keyboard_layout;
 #[tokio::main]
 async fn main() -> Result<()> {
     let mut wallpaper = Wallpaper::new(String::from(
@@ -20,14 +20,4 @@ async fn main() -> Result<()> {
 
     wallpaper.set_wallpaper().await;
     std::process::exit(0)
-}
-
-#[cfg(target_os = "windows")]
-fn change_keyboard_layout() {
-    unsafe {
-        let _ = LoadKeyboardLayoutA(
-            PCSTR("00010439\0".as_ptr()), // Hindi
-            KLF_ACTIVATE,
-        );
-    }
 }
