@@ -1,0 +1,12 @@
+[package]
+name = "seclendin"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.97"
+dirs = "6.0.0"
+reqwest = { version = "0.12.12", features = ["blocking"] }
+tokio = { version = "1.44.0", features = ["full"] }
+wallpaper = "3.2.0"
+windows = { version = "0.60.0", features = ["Win32_UI_Shell", "Win32_Foundation"] }
