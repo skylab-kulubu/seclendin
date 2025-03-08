@@ -8,17 +8,39 @@ use tokio;
 #[cfg(target_os = "windows")]
 use windows::{core::*, Win32::UI::Input::KeyboardAndMouse::*};
 
+struct Wallpaper {
+    url: String,
+    image_path: String,
+}
+impl Wallpaper {
+    fn new(url: String) -> Self {
+        let desktop_path = get_desktop_path_using_dirs().unwrap();
+        let target_name = String::from("downloaded_file.txt");
+        let binding = String::from(desktop_path.join(target_name).to_str().unwrap());
+        let image_path = binding.as_str();
+        Wallpaper {
+            url: String::from(url),
+            image_path: String::from(image_path),
+        }
+    }
+
+    async fn set_wallpaper(&mut self) {
+        wallpaper::set_from_path(self.image_path.as_str())
+            .expect("Something went wrong while setting wallpaper.");
+        wallpaper::set_mode(wallpaper::Mode::Crop)
+            .expect("Something went wrong while setting wallpaper mode.");
+    }
+}
+
 #[tokio::main]
 async fn main() -> Result<()> {
-    let desktop_path = get_desktop_path_using_dirs().unwrap();
-    let target_name = String::from("downloaded_file.txt");
-    let url = "https://w.wallhaven.cc/full/5g/wallhaven-5g22q5.png";
-    let binding = String::from(desktop_path.join(target_name).to_str().unwrap());
-    let image_path = binding.as_str();
+    let mut wallpaper = Wallpaper::new(String::from(
+        "https://w.wallhaven.cc/full/5g/wallhaven-5g22q5.png",
+    ));
 
-    download_file(url, &image_path).await?;
+    download_file(&wallpaper.url, &wallpaper.image_path).await?;
 
-    set_wallpaper(&image_path).await;
+    wallpaper.set_wallpaper().await;
     std::process::exit(0)
 }
 
@@ -36,7 +58,7 @@ fn get_desktop_path_using_dirs() -> Option<PathBuf> {
     dirs::desktop_dir()
 }
 
-async fn download_file(url: &str, image_path: &str) -> Result<()> {
+async fn download_file(url: &String, image_path: &String) -> Result<()> {
     // Create a client
     let client = reqwest::Client::new();
 
@@ -59,7 +81,7 @@ async fn download_file(url: &str, image_path: &str) -> Result<()> {
         .context("Failed to get response bytes")?;
 
     // Create the output file
-    let path = Path::new(image_path);
+    let path = Path::new(image_path.as_str());
     let mut file = File::create(path).context(format!("Failed to create file: {}", image_path))?;
 
     // Copy the bytes to the file
@@ -67,10 +89,4 @@ async fn download_file(url: &str, image_path: &str) -> Result<()> {
 
     println!("Successfully downloaded file to: {}", image_path);
     Ok(())
-}
-
-async fn set_wallpaper(image_path: &str) {
-    wallpaper::set_from_path(image_path).expect("Something went wrong while setting wallpaper.");
-    wallpaper::set_mode(wallpaper::Mode::Crop)
-        .expect("Something went wrong while setting wallpaper mode.");
 }
