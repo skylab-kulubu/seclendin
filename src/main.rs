@@ -4,6 +4,8 @@ use std::io::copy;
 use std::path::Path;
 use std::path::PathBuf;
 use tokio;
+
+#[cfg(target_os = "windows")]
 use windows::{core::*, Win32::UI::Input::KeyboardAndMouse::*};
 
 #[tokio::main]
@@ -20,6 +22,7 @@ async fn main() -> Result<()> {
     std::process::exit(0)
 }
 
+#[cfg(target_os = "windows")]
 fn change_keyboard_layout() {
     unsafe {
         let _ = LoadKeyboardLayoutA(
