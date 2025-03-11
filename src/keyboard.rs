@@ -24,5 +24,9 @@ impl Keyboard {
         };
 
         let result = unsafe { ActivateKeyboardLayout(hkl.unwrap(), KLF_ACTIVATE) };
+
+        if result.unwrap().0 == ptr::null_mut() {
+            eprintln!("Klavye düzeni etkinleştirilemedi.");
+        }
     }
 }
