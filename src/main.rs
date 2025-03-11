@@ -15,6 +15,13 @@ use keyboard::change_keyboard_layout;
 
 #[cfg(target_os = "windows")]
 use screen::Screen;
+
+#[cfg(target_os = "windows")]
+mod ui_language;
+
+#[cfg(target_os = "windows")]
+use ui_language::UILanguage;
+
 #[tokio::main]
 async fn main() -> Result<()> {
     let mut wallpaper = Wallpaper::new(String::from(
