@@ -4,35 +4,36 @@ use winreg::enums::{HKEY_LOCAL_MACHINE, KEY_WRITE};
 use winreg::RegKey;
 
 pub struct UILanguage {
-    // tr-TR\0 --> Turkish
+    // tr-TR --> Turkish
     target_lang: String,
     // 0x041F --> Turkish
     target_lang_id: i32,
     // 041F --> Turkish
     target_lang_reg: String,
-    num_langs: i32,
+    num_langs: u32,
 }
 
 impl UILanguage {
-    //pub fn change_prefered_lang(&mut self) {
-    //    unsafe {
-    //        let lang = PCWSTR(
-    //            self.target_lang
-    //                .as_str()
-    //                .encode_utf16()
-    //                .collect::<Vec<u16>>()
-    //                .as_ptr(),
-    //        );
-    //        let mut num_langs = self.num_langs;
-    //        let result = SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, lang, &mut num_langs);
-    //
-    //        if result.as_bool() {
-    //            println!("Language changed to {}", self.target_lang);
-    //        } else {
-    //            println!("Failed to change language");
-    //        }
-    //    }
-    //}
+    pub fn change_prefered_lang(&mut self) {
+        unsafe {
+            let lang = PCWSTR(
+                self.target_lang
+                    .as_str()
+                    .encode_utf16()
+                    .collect::<Vec<u16>>()
+                    .as_ptr(),
+            );
+            let mut num_langs = self.num_langs;
+            let result =
+                SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, lang, Some(&mut num_langs));
+
+            if result.as_bool() {
+                println!("Language changed to {}", self.target_lang);
+            } else {
+                println!("Failed to change language");
+            }
+        }
+    }
 
     pub fn change_ui_lang_from_hkey(&mut self) {
         let hklm = RegKey::predef(HKEY_LOCAL_MACHINE);
