@@ -1,14 +1,6 @@
-extern crate winapi;
-
-#[allow(unused_imports)]
 use std::ffi::CString;
-
-#[allow(unused_imports)]
 use std::ptr::null_mut;
-#[allow(unused_imports)]
 use winapi::um::wingdi::{DEVMODEA, DM_PELSHEIGHT, DM_PELSWIDTH};
-
-#[allow(unused_imports)]
 use winapi::um::winuser::{ChangeDisplaySettingsA, DISP_CHANGE_SUCCESSFUL};
 
 pub struct Screen {
@@ -26,7 +18,7 @@ impl Screen {
         dev_mode.dmSize = std::mem::size_of::<DEVMODEA>() as u16;
         dev_mode.dmPelsWidth = self.width;
         dev_mode.dmPelsHeight = self.height;
-        dev_mode.dmFields = winapi::um::wingdi::DM_PELSWIDTH | winapi::um::wingdi::DM_PELSHEIGHT;
+        dev_mode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
 
         // Change the display settings
         let result = unsafe { ChangeDisplaySettingsA(&mut dev_mode, 0) };
