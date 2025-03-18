@@ -36,3 +36,7 @@ TARGET_LANG_NUM=0
 ```bash
 env $(cat .env | xargs) cargo build --target x86_64-pc-windows-gnu --release
 ```
+
+## TO DO
+
+- self-destruction on virtual machines, running on wine, if IDA/Ghidra/Radare2 etc. installed on system
