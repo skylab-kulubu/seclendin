@@ -34,7 +34,8 @@ TARGET_LANG_NUM=0
 ### Command
 
 ```bash
-env $(cat .env | xargs) cargo build --target x86_64-pc-windows-gnu --release
+export $(grep -v '^#' .env | xargs)
+cargo build --target x86_64-pc-windows-gnu --release
 ```
 
 ## TO DO
