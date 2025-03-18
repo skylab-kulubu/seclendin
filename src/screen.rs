@@ -25,8 +25,10 @@ impl Screen {
 
         if result == DISP_CHANGE_SUCCESSFUL {
             println!("Resolution changed to {}x{}", self.width, self.height);
+        } else if result == 2 {
+            println!("Enter valid resulation ratio!");
         } else {
-            println!("Failed to change resolution");
+            println!("Failed to change resolution, {}", result);
         }
     }
 }

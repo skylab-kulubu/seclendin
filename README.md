@@ -31,6 +31,12 @@ TARGET_LANG_REG=041F
 TARGET_LANG_NUM=0
 ```
 
+#### Trouble Shooting Some issues
+
+##### Exit Code 2 On Changing Resulation
+
+You have te declare valid resulation ratio that target machine has. Eg. if the target machine doesn't have `800x600` resulation option, it will return `exit code 2`.
+
 ### Command
 
 ```bash
