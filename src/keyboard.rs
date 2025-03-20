@@ -1,7 +1,7 @@
 use std::ptr;
 use windows::core::PCWSTR;
 use windows::Win32::UI::Input::KeyboardAndMouse::{
-    ActivateKeyboardLayout, LoadKeyboardLayoutW, HKL, KLF_ACTIVATE,
+    ActivateKeyboardLayout, LoadKeyboardLayoutW, KLF_ACTIVATE,
 };
 
 pub struct Keyboard {

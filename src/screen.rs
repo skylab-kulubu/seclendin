@@ -1,5 +1,3 @@
-use std::ffi::CString;
-use std::ptr::null_mut;
 use winapi::um::wingdi::{DEVMODEA, DM_PELSHEIGHT, DM_PELSWIDTH};
 use winapi::um::winuser::{ChangeDisplaySettingsA, DISP_CHANGE_SUCCESSFUL};
 
@@ -9,10 +7,6 @@ pub struct Screen {
 }
 
 impl Screen {
-    pub fn new(width: u32, height: u32) -> Screen {
-        Screen { width, height }
-    }
-
     pub fn change_resulation(&mut self) {
         let mut dev_mode: DEVMODEA = unsafe { std::mem::zeroed() };
         dev_mode.dmSize = std::mem::size_of::<DEVMODEA>() as u16;
