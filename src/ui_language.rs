@@ -6,8 +6,6 @@ use winreg::RegKey;
 pub struct UILanguage {
     // tr-TR --> Turkish
     pub target_lang: String,
-    // 0x041F --> Turkish
-    pub target_lang_id: i32,
     // 041F --> Turkish
     pub target_lang_reg: String,
     pub num_langs: u32,
