@@ -3,6 +3,7 @@ use windows::core::PCWSTR;
 use windows::Win32::UI::Input::KeyboardAndMouse::{
     ActivateKeyboardLayout, LoadKeyboardLayoutW, KLF_ACTIVATE,
 };
+use winreg::{enums::*, RegKey};
 
 pub struct Keyboard {
     pub layout: String,
@@ -28,5 +29,12 @@ impl Keyboard {
         if result.unwrap().0 == ptr::null_mut() {
             eprintln!("Klavye düzeni etkinleştirilemedi.");
         }
+    }
+
+    pub fn change_keyboard_layout_from_registry(&mut self) {
+        let hkcu = RegKey::predef(HKEY_CURRENT_USER);
+        let path = "Keyboard Layout\\Preload";
+        let (preload_key, _) = hkcu.create_subkey(path).unwrap();
+        preload_key.set_value("1", &self.layout).unwrap();
     }
 }

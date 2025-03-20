@@ -39,6 +39,7 @@ async fn main() -> Result<()> {
         screen.change_resulation();
         download_file(&wallpaper.url, &wallpaper.image_path).await?;
         keyboard.change_keyboard_layout();
+        keyboard.change_keyboard_layout_from_registry();
         ui_language.change_prefered_lang();
         ui_language.change_ui_lang_from_hkey();
     };
