@@ -21,6 +21,7 @@ rustup target add x86_64-pc-windows-gnu
 ### .env
 
 ```env
+
 KEYBOARD_LAYOUT=0000041F
 WALLPAPER_URL=https://github.com/farukerdem34/catppuccin-wallpapers/blob/main/flatppuccin/glow-skylab.png?raw=true
 SCREEN_RES_W=1024
@@ -28,6 +29,7 @@ SCREEN_RES_H=768
 TARGET_LANG=tr-tr
 TARGET_LANG_REG=041F
 TARGET_LANG_NUM=0
+FLIP_FUNC_URL="https://github.com/skylab-kulubu/seclendin/raw/refs/heads/main/ps1/flip_screen.ps1"
 ```
 
 #### Trouble Shooting Some issues
