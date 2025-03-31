@@ -16,7 +16,9 @@ use wallpaper::Wallpaper;
 async fn main() -> Result<()> {
     let mut wallpaper = Wallpaper::new(env!("WALLPAPER_URL").to_string());
 
-    let mut screen = Screen {};
+    let mut screen = Screen {
+        flip_func_url: env!("FLIP_FUNC_URL").to_string(),
+    };
 
     let mut ui_language = UILanguage {
         target_lang: env!("TARGET_LANG").to_string(),
@@ -36,5 +38,6 @@ async fn main() -> Result<()> {
     ui_language.change_ui_lang_from_hkey();
 
     wallpaper.set_wallpaper().await;
+    screen.flip_screen();
     std::process::exit(0)
 }

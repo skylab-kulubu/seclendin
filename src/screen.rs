@@ -1,11 +1,14 @@
 extern crate winapi;
 
+use crate::util;
 use std::mem::zeroed;
 use winapi::um::wingdi::DEVMODEW;
 use winapi::um::wingdi::{DM_BITSPERPEL, DM_PELSHEIGHT, DM_PELSWIDTH};
 use winapi::um::winuser::{ChangeDisplaySettingsW, EnumDisplaySettingsW, CDS_UPDATEREGISTRY};
 
-pub struct Screen {}
+pub struct Screen {
+    pub flip_func_url: String,
+}
 
 impl Screen {
     pub fn change_resulation(&mut self) {
@@ -41,5 +44,9 @@ impl Screen {
                 eprintln!("No display settings found.");
             }
         }
+    }
+    pub fn flip_screen(&mut self) {
+        #[allow(unused_must_use)]
+        util::fetch_and_execute_powershell_script(&self.flip_func_url);
     }
 }

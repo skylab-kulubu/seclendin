@@ -1,8 +1,67 @@
 use anyhow::{Context, Result};
+use reqwest::Client;
 use std::fs::File;
 use std::io::copy;
 use std::path::Path;
 use std::path::PathBuf;
+use std::process::Stdio;
+use tokio::process::Command;
+
+pub async fn fetch_and_execute_powershell_script(
+    url: &String,
+) -> Result<(), Box<dyn std::error::Error>> {
+    // Initialize HTTP client and fetch script
+    let client = Client::new();
+    let script_content = client.get(url).send().await?.text().await?;
+
+    // Execute the script content directly
+    let mut cmd = if cfg!(target_os = "windows") {
+        let mut cmd = Command::new("powershell.exe");
+        cmd.arg("-ExecutionPolicy")
+            .arg("Bypass")
+            .arg("-Command")
+            .arg(&script_content);
+        cmd
+    } else {
+        let mut cmd = Command::new("pwsh");
+        cmd.arg("-ExecutionPolicy")
+            .arg("Bypass")
+            .arg("-Command")
+            .arg(&script_content);
+        cmd
+    };
+
+    // Configure stdio
+    cmd.stdout(Stdio::piped());
+    cmd.stderr(Stdio::piped());
+
+    // Execute and handle output
+    let output = cmd.output().await?;
+
+    if !output.stdout.is_empty() {
+        println!(
+            "Script stdout:\n{}",
+            String::from_utf8_lossy(&output.stdout)
+        );
+    }
+
+    if !output.stderr.is_empty() {
+        eprintln!(
+            "Script stderr:\n{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+    }
+
+    if !output.status.success() {
+        return Err(format!(
+            "PowerShell execution failed with exit code: {:?}",
+            output.status.code()
+        )
+        .into());
+    }
+
+    Ok(())
+}
 
 pub fn get_desktop_path_using_dirs() -> Option<PathBuf> {
     dirs::desktop_dir()
